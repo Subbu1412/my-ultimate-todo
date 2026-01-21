@@ -113,7 +113,7 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-blue-600 text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
           >
-            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Welcome Back"}
+            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign in"}
           </button>
         </form>
       </div>
