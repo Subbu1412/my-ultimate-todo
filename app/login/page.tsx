@@ -46,7 +46,7 @@ export default function LoginPage() {
           options: { captchaToken }, // Passes token to Supabase
         });
         if (error) throw error;
-        router.push("/dashboard");
+        router.push("/");
       }
     } catch (error: any) {
       alert(error.message);
