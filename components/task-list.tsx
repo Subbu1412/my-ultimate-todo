@@ -24,42 +24,66 @@ const priorityColors: Record<string, string> = {
   urgent: 'text-red-600 font-bold'
 }
 
-// Added onEdit prop here
 export default function TaskList({ workspaceId, onEdit }: { workspaceId: string, onEdit?: (task: Task) => void }) {
   const [tasks, setTasks] = useState<Task[]>([])
   const supabase = createClient()
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const { data } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('workspace_id', workspaceId)
-        .order('created_at', { ascending: false })
-      if (data) setTasks(data)
-    }
+  // 1. Fetching tasks and setting up Realtime
+  const fetchTasks = async () => {
+    const { data } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('workspace_id', workspaceId)
+      .order('created_at', { ascending: false })
+    if (data) setTasks(data)
+  }
 
+  useEffect(() => {
     fetchTasks()
 
+    // Listening for ANY changes (update, delete, insert) to keep List, Board, and Calendar in sync
     const channel = supabase
-      .channel('realtime-tasks')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, fetchTasks)
+      .channel('realtime-tasks-list')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'tasks',
+        filter: `workspace_id=eq.${workspaceId}` 
+      }, () => {
+        fetchTasks() // Force refresh all views when database changes
+      })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
-  }, [supabase, workspaceId])
+  }, [workspaceId])
 
-  const toggleTask = async (taskId: string, currentStatus: boolean) => {
-    // Optimistic update
-    setTasks(tasks.map(t => t.id === taskId ? { ...t, is_completed: !currentStatus } : t))
-    await supabase.from('tasks').update({ 
-      is_completed: !currentStatus,
-      status: !currentStatus ? 'done' : 'todo'
-    }).eq('id', taskId)
+  // 2. Fixed Toggle Logic (Syncs is_completed and status)
+  const toggleTask = async (task: Task) => {
+    const newCompletedStatus = !task.is_completed
+    // Map is_completed to the status the Board uses
+    const newStatus = newCompletedStatus ? 'done' : 'todo'
+
+    // Optimistic Update for instant UI feel
+    setTasks(prev => prev.map(t => 
+      t.id === task.id ? { ...t, is_completed: newCompletedStatus, status: newStatus } : t
+    ))
+
+    const { error } = await supabase
+      .from('tasks')
+      .update({ 
+        is_completed: newCompletedStatus,
+        status: newStatus 
+      })
+      .eq('id', task.id)
+
+    if (error) {
+      console.error("Sync error:", error)
+      fetchTasks() // Rollback on error
+    }
   }
 
   const deleteTask = async (taskId: string) => {
-    setTasks(tasks.filter(t => t.id !== taskId))
+    setTasks(prev => prev.filter(t => t.id !== taskId))
     await supabase.from('tasks').delete().eq('id', taskId)
   }
 
@@ -70,20 +94,19 @@ export default function TaskList({ workspaceId, onEdit }: { workspaceId: string,
       {tasks.map((task) => (
         <div 
           key={task.id} 
-          className={`group flex items-start gap-3 p-4 border rounded-lg bg-white shadow-sm transition-all hover:border-slate-400 cursor-pointer ${task.is_completed ? 'opacity-50 bg-slate-50' : ''}`}
-          // Clicking the row opens Edit, unless you click specific buttons
+          className={`group flex items-start gap-3 p-4 border rounded-lg bg-white shadow-sm transition-all hover:border-slate-400 cursor-pointer ${task.is_completed ? 'opacity-60 bg-slate-50' : ''}`}
           onClick={() => onEdit && onEdit(task)}
         >
           <div onClick={(e) => e.stopPropagation()}>
             <Checkbox 
               className="mt-1"
               checked={task.is_completed}
-              onCheckedChange={() => toggleTask(task.id, task.is_completed)} 
+              onCheckedChange={() => toggleTask(task)} 
             />
           </div>
           
           <div className="flex-1 space-y-1">
-            <p className={`font-medium ${task.is_completed ? 'line-through text-slate-500' : ''}`}>
+            <p className={`font-medium transition-all ${task.is_completed ? 'line-through text-slate-400' : 'text-slate-900'}`}>
               {task.title}
             </p>
             
@@ -106,7 +129,7 @@ export default function TaskList({ workspaceId, onEdit }: { workspaceId: string,
             size="icon" 
             className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" 
             onClick={(e) => {
-              e.stopPropagation() // Prevent opening edit modal when deleting
+              e.stopPropagation()
               deleteTask(task.id)
             }}
           >

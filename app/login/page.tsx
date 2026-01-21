@@ -15,58 +15,70 @@ export default function LoginPage() {
   const turnstileRef = useRef<any>(null);
   const router = useRouter();
   const supabase = createClient();
-  
 
   const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    if (!captchaToken) {
-      alert("Please complete the security check.");
-      setLoading(false);
-      return;
-    }
+  if (!captchaToken) {
+    alert("Please complete the security check.");
+    setLoading(false);
+    return;
+  }
 
-    try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { display_name: displayName },
-            captchaToken, // Passes token to Supabase
-          },
-        });
-        if (error) throw error;
-        alert("Success! Check your email for a confirmation link.");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-          options: { captchaToken }, // Passes token to Supabase
-        });
-        if (error) throw error;
-        router.push("/");
+  try {
+    if (isSignUp) {
+      // --- CRITICAL FIX: Check for existing account ---
+      const { data: userExists } = await supabase
+        .from('profiles') 
+        .select('id')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+
+      if (userExists) {
+        alert("This email is already registered. Please Sign In.");
+        setIsSignUp(false);
+        setLoading(false);
+        return;
       }
-    } catch (error: any) {
-      alert(error.message);
-      setCaptchaToken(null);
-      turnstileRef.current?.reset(); // Resets widget on failure
-    } finally {
-      setLoading(false);
-    }
-  };
 
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: displayName }, captchaToken },
+      });
+      if (error) throw error;
+      alert("Success! Check your email to confirm.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: { captchaToken },
+      });
+      if (error) throw error;
+      router.push("/"); 
+    }
+  } catch (error: any) {
+    alert(error.message);
+    turnstileRef.current?.reset();
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f0f9ff] p-4">
       <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-blue-100">
         <h1 className="text-4xl font-black text-[#0369a1] text-center mb-2 italic">GoalGrid</h1>
+        
+        {/* Sign In / Sign Up Toggle Tabs */}
         <div className="flex bg-blue-50 p-1 rounded-xl mb-8">
           <button 
+            type="button"
             onClick={() => setIsSignUp(false)}
             className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${!isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-blue-400'}`}
           >Sign In</button>
           <button 
+            type="button"
             onClick={() => setIsSignUp(true)}
             className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-blue-400'}`}
           >Sign Up</button>
@@ -103,7 +115,7 @@ export default function LoginPage() {
           <div className="flex justify-center py-2">
             <Turnstile
               ref={turnstileRef}
-              siteKey="0x4AAAAAACN1TiTvFpqP1lk0" // PASTE YOUR KEY FROM CLOUDFLARE
+              siteKey="0x4AAAAAACN1TiTvFpqP1lk0" 
               onSuccess={(token) => setCaptchaToken(token)}
             />
           </div>
