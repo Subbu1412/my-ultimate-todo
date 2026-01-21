@@ -1,106 +1,113 @@
 'use client'
 
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Clock, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, ArrowLeft } from 'lucide-react'
-import { format } from 'date-fns'
 
-// 1. Define the Shape of a Task
-type Task = {
-  id: string
-  title: string
-  status: string
-  priority: string
-  due_date: string | null
-  description?: string
-}
+const COLUMNS = [
+  { id: 'todo', title: 'To Do', color: 'bg-slate-100 border-slate-200' },
+  { id: 'in-progress', title: 'In Progress', color: 'bg-blue-50 border-blue-100' },
+  { id: 'done', title: 'Done', color: 'bg-green-50 border-green-100' }
+]
 
-// 2. Define the Props (Inputs) this component accepts
-interface TaskBoardProps {
-  tasks: Task[]
-  onUpdateStatus: (id: string, status: string) => void
-  onEdit: (task: Task) => void // <--- New Prop for Editing
-}
+export default function TaskBoard({ tasks, onUpdateStatus, onEdit }: { tasks: any[], onUpdateStatus: any, onEdit: any }) {
 
-export default function TaskBoard({ tasks, onUpdateStatus, onEdit }: TaskBoardProps) {
-  
-  const columns = [
-    { id: 'todo', label: 'To Do', color: 'bg-slate-100' },
-    { id: 'in-progress', label: 'In Progress', color: 'bg-blue-50' },
-    { id: 'done', label: 'Done', color: 'bg-green-50' }
-  ]
+  // This function runs when you drop a card
+  const handleDragEnd = (result: any) => {
+    const { destination, source, draggableId } = result
+
+    // If dropped outside a column, do nothing
+    if (!destination) return
+
+    // If dropped in the same place, do nothing
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return
+
+    // Call the parent function to update Supabase
+    const newStatus = destination.droppableId
+    onUpdateStatus(draggableId, newStatus)
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full overflow-x-auto">
-      {columns.map((col) => (
-        <div key={col.id} className={`p-4 rounded-xl ${col.color} min-h-[500px]`}>
-          
-          {/* Column Header */}
-          <h3 className="font-bold text-slate-700 mb-4 flex justify-between items-center">
-            {col.label}
-            <Badge variant="secondary" className="bg-white">
-              {tasks.filter(t => t.status === col.id).length}
-            </Badge>
-          </h3>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+        {COLUMNS.map(column => {
+          // Filter tasks for this column
+          const columnTasks = tasks.filter(t => t.status === column.id)
 
-          {/* Task Cards */}
-          <div className="space-y-3">
-            {tasks.filter(task => task.status === col.id).map(task => (
-              <Card 
-                key={task.id} 
-                className="shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border-slate-400"
-                onClick={() => onEdit(task)} // <--- Clicking the card opens the dialog
-              >
-                <CardContent className="p-3">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className={`text-xs font-bold px-2 py-1 rounded uppercase tracking-wider ${
-                      task.priority === 'urgent' ? 'bg-red-100 text-red-700' : 
-                      task.priority === 'high' ? 'bg-orange-100 text-orange-700' : 
-                      'bg-slate-100 text-slate-600'
-                    }`}>
-                      {task.priority}
-                    </span>
-                    {task.due_date && (
-                      <span className="text-xs text-slate-400">
-                        {format(new Date(task.due_date), 'MMM d')}
-                      </span>
-                    )}
+          return (
+            <div key={column.id} className={`flex flex-col h-full rounded-xl border-2 ${column.color} p-4`}>
+              {/* Column Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-slate-700">{column.title}</h3>
+                <Badge variant="secondary" className="bg-white/50">{columnTasks.length}</Badge>
+              </div>
+
+              {/* Droppable Area */}
+              <Droppable droppableId={column.id}>
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="flex-1 space-y-3 min-h-[200px]" // Min-height ensures you can drop into an empty column
+                  >
+                    {columnTasks.map((task, index) => (
+                      <Draggable key={task.id} draggableId={task.id} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{ ...provided.draggableProps.style }} // Essential for smooth dragging
+                          >
+                            <Card className="cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow">
+                              <CardContent className="p-4 space-y-3">
+                                {/* Title and Edit Button */}
+                                <div className="flex justify-between items-start gap-2">
+                                  <span className="font-medium text-slate-900 leading-tight">{task.title}</span>
+                                  <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => onEdit(task)}>
+                                    <Pencil className="h-3 w-3 text-slate-400" />
+                                  </Button>
+                                </div>
+                                
+                                {/* Meta Data: Date, Category, Priority */}
+                                <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    <span>{new Date(task.due_date).toLocaleDateString()}</span>
+                                  </div>
+                                  
+                                  <div className="flex gap-1">
+                                    {/* CATEGORY BADGE */}
+                                    <Badge variant="outline" className="text-slate-600 border-slate-300">
+                                      {task.category || 'Personal'}
+                                    </Badge>
+
+                                    {/* PRIORITY BADGE */}
+                                    <Badge className={
+                                      task.priority === 'High' ? 'bg-red-100 text-red-700 hover:bg-red-100 border-none' :
+                                      task.priority === 'Medium' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100 border-none' :
+                                      'bg-slate-100 text-slate-700 hover:bg-slate-100 border-none'
+                                    }>
+                                      {task.priority}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                  
-                  <p className="font-medium text-sm mb-3 line-clamp-2">{task.title}</p>
-
-                  <div className="flex justify-between gap-2">
-                    {/* Move Left Button */}
-                    <Button 
-                      variant="ghost" size="sm" className="h-6 px-2 hover:bg-slate-200"
-                      disabled={col.id === 'todo'}
-                      onClick={(e) => {
-                        e.stopPropagation() // <--- Prevents opening the edit dialog
-                        onUpdateStatus(task.id, col.id === 'done' ? 'in-progress' : 'todo')
-                      }}
-                    >
-                      <ArrowLeft className="h-3 w-3" />
-                    </Button>
-
-                    {/* Move Right Button */}
-                    <Button 
-                      variant="ghost" size="sm" className="h-6 px-2 hover:bg-slate-200"
-                      disabled={col.id === 'done'}
-                      onClick={(e) => {
-                        e.stopPropagation() // <--- Prevents opening the edit dialog
-                        onUpdateStatus(task.id, col.id === 'todo' ? 'in-progress' : 'done')
-                      }}
-                    >
-                      <ArrowRight className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+                )}
+              </Droppable>
+            </div>
+          )
+        })}
+      </div>
+    </DragDropContext>
   )
 }
