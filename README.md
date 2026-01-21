@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+GoalGrid is a high-performance, full-stack task management application designed with a focus on speed, security, and a modern "Glassmorphic" aesthetic. It helps users manage their daily goals while providing automated email reminders to keep them on track.
 
-## Getting Started
+✨ Features
+Glassmorphic UI: A modern "Ocean Breeze" themed interface built with Tailwind CSS and Radix UI components.
 
-First, run the development server:
+Secure Authentication: Powered by Supabase Auth with Cloudflare Turnstile CAPTCHA protection to prevent bot abuse.
 
-```bash
+Real-time Database: Instant task updates and persistent state management using Supabase and Next.js.
+
+Automated Reminders: A custom API endpoint triggered by a cron job to send email notifications via Resend/Nodemailer.
+
+Timezone Intelligence: Smart filtering ensures reminders are sent at the correct local time for every user.
+
+Drag & Drop: Intuitive task organization using @hello-pangea/dnd.
+
+🛠️ Tech Stack
+Layer                     Technology
+Frontend       Next.js 15, React 19, Tailwind CSS
+Backend        Supabase (BaaS), Next.js API Routes
+Database       PostgreSQL (via Supabase)
+Security       Cloudflare Turnstile CAPTCHA
+Mailing        Resend / Nodemailer
+Deployment     Vercel
+
+Prerequisites
+Node.js 20+
+
+A Supabase Project
+
+A Cloudflare Turnstile Account
+
+Installation
+
+Clone the repository:
+git clone https://github.com/Subbu1412/my-ultimate-todo.git
+cd my-ultimate-todo
+
+Install dependencies:
+npm install
+Set up Environment Variables: Create a .env.local file in the root directory and add your keys:
+
+Code snippet
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_cloudflare_site_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+RESEND_API_KEY=your_resend_api_key
+
+Run the development server:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🛡️ Security
+This project implements Attack Protection via Supabase. All authentication attempts (Login and Signup) are verified through a Cloudflare Turnstile widget to ensure that only human users can access the system.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<img width="1445" height="748" alt="image" src="https://github.com/user-attachments/assets/454ed34d-772c-47b0-8594-b2fd8c28ed11" />
+<img width="738" height="686" alt="image" src="https://github.com/user-attachments/assets/aa21b523-dfb8-42c9-9e65-28aa93852150" />
+<img width="1477" height="715" alt="image" src="https://github.com/user-attachments/assets/3f6bae5f-4448-48d0-9202-42b02733f266" />
+<img width="1488" height="839" alt="image" src="https://github.com/user-attachments/assets/8b1c4a7c-4084-464e-ac47-7f35486f1bb3" />
+<img width="774" height="513" alt="image" src="https://github.com/user-attachments/assets/b7563a74-36d8-4b7d-b82a-b56d9d0fdc89" />
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
