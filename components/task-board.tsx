@@ -7,9 +7,9 @@ import { Clock, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const COLUMNS = [
-  { id: 'todo', title: 'To Do', color: 'bg-slate-100 border-slate-200' },
-  { id: 'in-progress', title: 'In Progress', color: 'bg-blue-50 border-blue-100' },
-  { id: 'done', title: 'Done', color: 'bg-green-50 border-green-100' }
+  { id: 'todo', title: 'To Do', color: 'bg-white border-slate-200 shadow-sm' },
+  { id: 'in-progress', title: 'In Progress', color: 'bg-blue-50 border-blue-100 shadow-inner' },
+  { id: 'done', title: 'Done', color: 'bg-emerald-50 border-emerald-100 shadow-inner' }
 ]
 
 export default function TaskBoard({ tasks, onUpdateStatus, onEdit }: { tasks: any[], onUpdateStatus: any, onEdit: any }) {

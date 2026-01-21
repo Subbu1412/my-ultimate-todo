@@ -10,15 +10,13 @@ import EditTaskDialog from '@/components/edit-task-dialog'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LayoutList, KanbanSquare, CalendarDays, Settings } from 'lucide-react' // Added Settings Icon
-import Link from 'next/link' // Added Link for navigation
+import { LayoutList, KanbanSquare, CalendarDays, Settings, Grid3X3 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
   const [workspaceId, setWorkspaceId] = useState<string | null>(null)
   const [tasks, setTasks] = useState<any[]>([])
-  
-  // State for editing
   const [editingTask, setEditingTask] = useState<any>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -57,82 +55,94 @@ export default function Home() {
     await supabase.from('tasks').update({ status: newStatus }).eq('id', taskId)
   }
 
-  // Function to open edit modal
   const handleEditTask = (task: any) => {
     setEditingTask(task)
     setIsDialogOpen(true)
   }
 
-  if (!user) return <div className="p-10 flex justify-center text-slate-500">Loading...</div>
+  if (!user) return <div className="h-screen flex items-center justify-center text-blue-400">Loading GoalGrid...</div>
 
   return (
-    <main className="max-w-6xl mx-auto p-4">
-      {/* HEADER SECTION */}
-      <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-xl border shadow-sm">
-        <div>
-           <h1 className="text-2xl font-bold text-slate-900">My Ultimate Todo</h1>
-           <p className="text-slate-500 text-sm mt-1">
-             Welcome back, <span className="font-semibold text-indigo-600">{user.user_metadata?.display_name || user.email}</span>
-           </p>
-        </div>
+    // NEW: Ocean Breeze Gradient Background
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* HEADER SECTION */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-blue-100 shadow-sm">
+          <div className="flex items-center gap-3">
+             <div className="bg-blue-600 p-2 rounded-lg text-white shadow-blue-200 shadow-lg">
+                <Grid3X3 className="h-6 w-6" />
+             </div>
+             <div>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">GoalGrid</h1>
+                <p className="text-slate-500 text-sm">
+                  Hello, <span className="font-semibold text-blue-600">{user.user_metadata?.display_name || 'Creator'}</span>. Let's make waves today. 🌊
+                </p>
+             </div>
+          </div>
 
-        <div className="flex items-center gap-2">
-          {/* NEW: Settings Button */}
-          <Link href="/settings">
-            <Button variant="ghost" size="icon" title="Settings">
-              <Settings className="h-5 w-5 text-slate-600" />
+          <div className="flex items-center gap-3">
+            <Link href="/settings">
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-blue-600 hover:bg-blue-50">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+              onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
+            >
+              Sign Out
             </Button>
-          </Link>
-
-          {/* Sign Out Button */}
-          <Button 
-            variant="outline" 
-            onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
-          >
-            Sign Out
-          </Button>
+          </div>
         </div>
-      </div>
 
-      {workspaceId ? (
-        <div className="space-y-6">
-           <TaskInput workspaceId={workspaceId} />
-
-           <Tabs defaultValue="list" className="w-full">
-             <div className="flex justify-between items-center mb-4">
-               <h2 className="text-lg font-semibold text-slate-700">My Tasks</h2>
-               <TabsList>
-                 <TabsTrigger value="list" className="flex gap-2"><LayoutList className="h-4 w-4"/> List</TabsTrigger>
-                 <TabsTrigger value="board" className="flex gap-2"><KanbanSquare className="h-4 w-4"/> Board</TabsTrigger>
-                 <TabsTrigger value="calendar" className="flex gap-2"><CalendarDays className="h-4 w-4"/> Calendar</TabsTrigger>
-               </TabsList>
+        {workspaceId ? (
+          <div className="space-y-6">
+             {/* Task Input Section */}
+             <div className="bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
+                <TaskInput workspaceId={workspaceId} />
              </div>
 
-             <TabsContent value="list">
-               <TaskList workspaceId={workspaceId} onEdit={handleEditTask} /> 
-             </TabsContent>
-             
-             <TabsContent value="board">
-               <TaskBoard tasks={tasks} onUpdateStatus={updateTaskStatus} onEdit={handleEditTask} />
-             </TabsContent>
+             <Tabs defaultValue="board" className="w-full">
+               <div className="flex justify-between items-center mb-6">
+                 <h2 className="text-xl font-bold text-slate-800">Your Goals</h2>
+                 <TabsList className="bg-blue-50/50 border border-blue-100">
+                   <TabsTrigger value="list" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"><LayoutList className="h-4 w-4 mr-2"/> List</TabsTrigger>
+                   <TabsTrigger value="board" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"><KanbanSquare className="h-4 w-4 mr-2"/> Board</TabsTrigger>
+                   <TabsTrigger value="calendar" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm"><CalendarDays className="h-4 w-4 mr-2"/> Calendar</TabsTrigger>
+                 </TabsList>
+               </div>
 
-             <TabsContent value="calendar">
-               <TaskCalendar tasks={tasks} />
-             </TabsContent>
-           </Tabs>
+               <TabsContent value="list" className="mt-0">
+                 <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
+                    <TaskList workspaceId={workspaceId} onEdit={handleEditTask} /> 
+                 </div>
+               </TabsContent>
+               
+               <TabsContent value="board" className="mt-0 h-[600px]">
+                 <TaskBoard tasks={tasks} onUpdateStatus={updateTaskStatus} onEdit={handleEditTask} />
+               </TabsContent>
 
-           {/* Popup Dialog */}
-           {editingTask && (
-             <EditTaskDialog 
-               task={editingTask} 
-               open={isDialogOpen} 
-               onOpenChange={setIsDialogOpen} 
-             />
-           )}
-        </div>
-      ) : (
-        <div className="text-center p-10 text-slate-500">Loading workspace...</div>
-      )}
+               <TabsContent value="calendar" className="mt-0">
+                 <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm">
+                    <TaskCalendar tasks={tasks} />
+                 </div>
+               </TabsContent>
+             </Tabs>
+
+             {editingTask && (
+               <EditTaskDialog 
+                 task={editingTask} 
+                 open={isDialogOpen} 
+                 onOpenChange={setIsDialogOpen} 
+               />
+             )}
+          </div>
+        ) : (
+          <div className="text-center p-20 text-blue-400">Loading your workspace...</div>
+        )}
+      </div>
     </main>
   )
 }
