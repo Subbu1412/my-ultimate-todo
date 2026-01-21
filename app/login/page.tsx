@@ -15,6 +15,7 @@ export default function LoginPage() {
   const turnstileRef = useRef<any>(null);
   const router = useRouter();
   const supabase = createClient();
+  
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
