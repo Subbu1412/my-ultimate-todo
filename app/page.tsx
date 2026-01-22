@@ -76,8 +76,8 @@ export default function Home() {
                 <Image 
                   src="/favicon.ico" 
                   alt="GoalGrid Logo" 
-                  width={56}   // INCREASED SIZE HERE (was 32)
-                  height={56}  // INCREASED SIZE HERE (was 32)
+                  width={98}   // INCREASED SIZE HERE (was 32)
+                  height={98}  // INCREASED SIZE HERE (was 32)
                   className="drop-shadow-sm"
                 />
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">GoalGrid</h1>
