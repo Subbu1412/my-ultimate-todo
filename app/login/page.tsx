@@ -77,11 +77,11 @@ export default function LoginPage() {
           <Image 
             src="/favicon.ico" 
             alt="GoalGrid Logo" 
-            width={60} 
-            height={60} 
+            width={99} 
+            height={99} 
             className="drop-shadow-sm mb-2"
           />
-          <h1 className="text-4xl font-black text-[#0369a1] text-center italic">GoalGrid</h1>
+          <h1 className="text-2xl font-black text-[#0369a1] text-center italic">Track you goals!</h1>
         </div>
         {/* --- NEW LOGO SECTION END --- */}
         
