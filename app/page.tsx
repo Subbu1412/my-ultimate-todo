@@ -1,5 +1,5 @@
 'use client'
-
+import Image from 'next/image';
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import TaskInput from '@/components/task-input'
@@ -10,7 +10,7 @@ import EditTaskDialog from '@/components/edit-task-dialog'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LayoutList, KanbanSquare, CalendarDays, Settings, Grid3X3 } from 'lucide-react'
+import { LayoutList, KanbanSquare, CalendarDays, Settings } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Home() {
@@ -63,38 +63,51 @@ export default function Home() {
   if (!user) return <div className="h-screen flex items-center justify-center text-blue-400">Loading GoalGrid...</div>
 
   return (
-    // NEW: Ocean Breeze Gradient Background
+    // Ocean Breeze Gradient Background
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
-        {/* HEADER SECTION */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-blue-100 shadow-sm">
-          <div className="flex items-center gap-3">
-             <div className="bg-blue-600 p-2 rounded-lg text-white shadow-blue-200 shadow-lg">
-                <Grid3X3 className="h-6 w-6" />
-             </div>
-             <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">GoalGrid</h1>
-                <p className="text-slate-500 text-sm">
-                  Hello, <span className="font-semibold text-blue-600">{user.user_metadata?.display_name || 'Creator'}</span>. Let's make waves today. 🌊
-                </p>
-             </div>
-          </div>
+        {/* HEADER SECTION - FIXED */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+           {/* Left Side: Logo & Greeting */}
+           <div className="flex items-center gap-6">
+              {/* Logo Block */}
+              <div className="flex items-center gap-2">
+                <Image 
+                  src="/favicon.ico" 
+                  alt="GoalGrid Logo" 
+                  width={32} 
+                  height={32} 
+                />
+                <h1 className="text-2xl font-bold text-slate-900">GoalGrid</h1>
+              </div>
 
-          <div className="flex items-center gap-3">
-            <Link href="/settings">
-              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-blue-600 hover:bg-blue-50">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Button 
-              variant="outline" 
-              className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
-              onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
-            >
-              Sign Out
-            </Button>
-          </div>
+              {/* Vertical Divider (Hidden on mobile) */}
+              <div className="hidden md:block h-8 w-px bg-slate-200"></div>
+
+              {/* Greeting Block */}
+              <div className="hidden md:block">
+                 <p className="text-slate-500 text-sm">
+                   Hello, <span className="font-semibold text-blue-600">{user.user_metadata?.display_name || 'Creator'}</span>. Let's make waves today. 🌊
+                 </p>
+              </div>
+           </div>
+
+           {/* Right Side: Actions */}
+           <div className="flex items-center gap-3">
+             <Link href="/settings">
+               <Button variant="ghost" size="icon" className="text-slate-500 hover:text-blue-600 hover:bg-blue-50">
+                 <Settings className="h-5 w-5" />
+               </Button>
+             </Link>
+             <Button 
+               variant="outline" 
+               className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+               onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
+             >
+               Sign Out
+             </Button>
+           </div>
         </div>
 
         {workspaceId ? (
