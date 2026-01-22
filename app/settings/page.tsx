@@ -128,7 +128,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Daily Reminder Time (UTC)</Label>
+                    <Label>Daily Reminder Time (IST)</Label>
                     <Select value={reminderHour} onValueChange={setReminderHour}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a time" />
@@ -141,10 +141,20 @@ export default function SettingsPage() {
                         <SelectItem value="10">10:00 AM IST</SelectItem>
                         <SelectItem value="11">11:00 AM IST</SelectItem>
                         <SelectItem value="12">12:00 PM IST</SelectItem>
+                        <SelectItem value="13">1:00 PM IST</SelectItem>
+                        <SelectItem value="14">2:00 PM IST</SelectItem>
+                        <SelectItem value="15">3:00 PM IST</SelectItem>
+                        <SelectItem value="16">4:00 PM IST</SelectItem>
+                        <SelectItem value="17">5:00 PM IST</SelectItem>
                         <SelectItem value="18">6:00 PM IST</SelectItem>
+                        <SelectItem value="19">7:00 PM IST</SelectItem>
+                        <SelectItem value="20">8:00 PM IST</SelectItem>
+                        <SelectItem value="21">9:00 PM IST (Default)</SelectItem>
+                        <SelectItem value="22">10:00 PM IST</SelectItem>
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-slate-500">Emails are sent based on IST time.</p>
+                    <p className="text-xs text-slate-500">We Encourage sleep so no emails between 10:00 PM to 6:00 AM</p>
                   </div>
 
                   {message && <div className="text-green-600 text-sm font-medium bg-green-50 p-3 rounded-lg border border-green-100">{message}</div>}
@@ -200,7 +210,7 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="pt-6">
                 <a 
-                  href="mailto:support@goalgrid.com" 
+                  href="mailto:vibe.todo14@gmail.com" 
                   className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-md transition-all group bg-white cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
