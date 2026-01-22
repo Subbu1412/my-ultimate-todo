@@ -12,6 +12,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+<meta name="google-site-verification" content="rg9IF7GwwTi22l825gJ78NcrH_MzeIdQpiZOWK7E5YI" />
+
 export const metadata = {
   title: 'GoalGrid | Ultimate Task & Workspace Manager',
   description: 'Organize your life with GoalGrid. Manage tasks in List, Board, and Calendar views with real-time sync.',
