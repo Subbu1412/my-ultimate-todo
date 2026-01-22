@@ -67,28 +67,32 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
-        {/* HEADER SECTION - FIXED */}
+        {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
            {/* Left Side: Logo & Greeting */}
            <div className="flex items-center gap-6">
               {/* Logo Block */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Image 
                   src="/favicon.ico" 
                   alt="GoalGrid Logo" 
-                  width={32} 
-                  height={32} 
+                  width={56}   // INCREASED SIZE HERE (was 32)
+                  height={56}  // INCREASED SIZE HERE (was 32)
+                  className="drop-shadow-sm"
                 />
-                <h1 className="text-2xl font-bold text-slate-900">GoalGrid</h1>
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">GoalGrid</h1>
               </div>
 
               {/* Vertical Divider (Hidden on mobile) */}
-              <div className="hidden md:block h-8 w-px bg-slate-200"></div>
+              <div className="hidden md:block h-10 w-px bg-slate-300"></div>
 
               {/* Greeting Block */}
               <div className="hidden md:block">
-                 <p className="text-slate-500 text-sm">
-                   Hello, <span className="font-semibold text-blue-600">{user.user_metadata?.display_name || 'Creator'}</span>. Let's make waves today. 🌊
+                 <p className="text-slate-500 text-sm font-medium">
+                   Welcome back,
+                 </p>
+                 <p className="text-blue-700 font-bold">
+                   {user.user_metadata?.display_name || 'Creator'} 🌊
                  </p>
               </div>
            </div>
@@ -97,12 +101,12 @@ export default function Home() {
            <div className="flex items-center gap-3">
              <Link href="/settings">
                <Button variant="ghost" size="icon" className="text-slate-500 hover:text-blue-600 hover:bg-blue-50">
-                 <Settings className="h-5 w-5" />
+                 <Settings className="h-6 w-6" />
                </Button>
              </Link>
              <Button 
                variant="outline" 
-               className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+               className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:text-blue-800 font-medium"
                onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
              >
                Sign Out
