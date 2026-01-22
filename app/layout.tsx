@@ -12,9 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "GoalGrid", // New Name
-  description: "Map your goals, track your progress.",
+export const metadata = {
+  title: 'GoalGrid | Ultimate Task & Workspace Manager',
+  description: 'Organize your life with GoalGrid. Manage tasks in List, Board, and Calendar views with real-time sync.',
+  keywords: 'GoalGrid, task manager, to-do list, project management, productivity',
 };
 
 export default function RootLayout({
