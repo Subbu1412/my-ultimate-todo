@@ -209,7 +209,7 @@ export default function SettingsPage() {
                     </div>
                     <div>
                       <p className="font-bold text-slate-800">Email Us</p>
-                      <p className="text-sm text-slate-500 group-hover:text-blue-600">support@goalgrid.com</p>
+                      <p className="text-sm text-slate-500 group-hover:text-blue-600">vibe.todo14@gmail.com</p>
                     </div>
                   </div>
                   <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-blue-500" />
