@@ -81,7 +81,7 @@ export default function LoginPage() {
             height={120} 
             className="drop-shadow-sm mb-2"
           />
-          <h1 className="text-2xl font-black text-[#0369a1] text-center italic">Track you goals!</h1>
+          <h1 className="text-2xl font-black text-[#0369a1] text-center italic">Track your goals!</h1>
         </div>
         {/* --- NEW LOGO SECTION END --- */}
         
