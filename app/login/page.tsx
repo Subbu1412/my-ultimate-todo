@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { Turnstile } from "@marsidev/react-turnstile";
 import Image from "next/image";
-import { CheckCircle2, Zap, Layout, ShieldCheck } from "lucide-react"; // Import new icons
+import { CheckCircle2, Zap, Layout, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -70,7 +70,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-white">
       
-      {/* --- LEFT SIDE: BRANDING & INFO (Hidden on mobile) --- */}
+      {/* --- LEFT SIDE: BRANDING (Visible on Desktop) --- */}
       <div className="hidden lg:flex w-1/2 bg-[#0369a1] text-white p-12 flex-col justify-between relative overflow-hidden">
         {/* Decorative Background Circles */}
         <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
@@ -78,14 +78,17 @@ export default function LoginPage() {
 
         <div className="z-10">
           <div className="flex items-center gap-3 mb-12">
+             {/* FIX 1: Removed 'brightness-0 invert' class. 
+                Now your actual logo colors will show. 
+             */}
              <Image 
                 src="/favicon.ico" 
                 alt="GoalGrid Logo" 
-                width={40} 
-                height={40} 
-                className="brightness-0 invert" // Makes logo white
+                width={48} 
+                height={48} 
+                className="rounded-full bg-white/10 p-1" // Added slight background to make it pop
              />
-             <h1 className="text-2xl font-bold tracking-tight">GoalGrid</h1>
+             <h1 className="text-3xl font-bold tracking-tight">GoalGrid</h1>
           </div>
 
           <h2 className="text-4xl font-extrabold mb-6 leading-tight">
@@ -129,6 +132,16 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-blue-50/30">
         <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-blue-100">
           
+          {/* Logo for Mobile (Hidden on Desktop) */}
+          <div className="flex justify-center mb-6 lg:hidden">
+            <Image 
+              src="/favicon.ico" 
+              alt="GoalGrid Logo" 
+              width={60} 
+              height={60} 
+            />
+          </div>
+
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-slate-900">
               {isSignUp ? "Create your account" : "Welcome back"}
@@ -138,7 +151,7 @@ export default function LoginPage() {
             </p>
           </div>
           
-          {/* Sign In / Sign Up Tabs */}
+          {/* Toggle Buttons */}
           <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
             <button 
               type="button"
@@ -206,10 +219,11 @@ export default function LoginPage() {
             </button>
           </form>
 
+          {/* FIX 2: Updated Contact Link */}
           <div className="mt-6 text-center text-sm">
             <p className="text-slate-500">
               Need help?{' '}
-              <a href="/contact" className="font-semibold text-blue-600 hover:underline">
+              <a href="mailto:vibe.todo14@gmail.com" className="font-semibold text-blue-600 hover:underline">
                 Contact Support
               </a>
             </p>
