@@ -78,15 +78,12 @@ export default function LoginPage() {
 
         <div className="z-10">
           <div className="flex items-center gap-3 mb-12">
-             {/* FIX 1: Removed 'brightness-0 invert' class. 
-                Now your actual logo colors will show. 
-             */}
              <Image 
                 src="/favicon.ico" 
                 alt="GoalGrid Logo" 
                 width={120} 
                 height={120} 
-                className="rounded-full bg-white/10 p-1" // Added slight background to make it pop
+                className="rounded-full bg-white/10 p-1"
              />
              <h1 className="text-3xl font-bold tracking-tight">GoalGrid</h1>
           </div>
@@ -95,29 +92,32 @@ export default function LoginPage() {
             Stop dreaming. <br/>Start doing.
           </h2>
           <p className="text-blue-100 text-lg mb-12 max-w-md">
-            The minimal workspace for creators who want to ship projects faster. No bloat, just focus.
+            The simplest way to get things done. No complex menus, just focus.
           </p>
 
           <div className="space-y-6">
             <div className="flex items-start gap-4">
                <div className="bg-blue-500/30 p-2 rounded-lg"><Zap className="w-6 h-6 text-yellow-300" /></div>
                <div>
-                 <h3 className="font-bold text-lg">Real-time Sync</h3>
-                 <p className="text-blue-200 text-sm">Updates appear instantly on all devices.</p>
+                 {/* SIMPLIFIED TEXT 1 */}
+                 <h3 className="font-bold text-lg">Works Everywhere</h3>
+                 <p className="text-blue-200 text-sm">Open on your phone or laptop. It just works.</p>
                </div>
             </div>
             <div className="flex items-start gap-4">
                <div className="bg-blue-500/30 p-2 rounded-lg"><Layout className="w-6 h-6 text-cyan-300" /></div>
                <div>
-                 <h3 className="font-bold text-lg">Kanban & List Views</h3>
-                 <p className="text-blue-200 text-sm">Visualize your work the way you want.</p>
+                 {/* SIMPLIFIED TEXT 2 */}
+                 <h3 className="font-bold text-lg">Drag & Drop</h3>
+                 <p className="text-blue-200 text-sm">Move tasks around easily. Organize your way.</p>
                </div>
             </div>
             <div className="flex items-start gap-4">
                <div className="bg-blue-500/30 p-2 rounded-lg"><ShieldCheck className="w-6 h-6 text-green-300" /></div>
                <div>
-                 <h3 className="font-bold text-lg">Enterprise Security</h3>
-                 <p className="text-blue-200 text-sm">Your data is encrypted and safe.</p>
+                 {/* SIMPLIFIED TEXT 3 */}
+                 <h3 className="font-bold text-lg">Safe & Private</h3>
+                 <p className="text-blue-200 text-sm">Your data is yours. We keep it safe.</p>
                </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-blue-50/30">
         <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-blue-100">
           
-          {/* Logo for Mobile (Hidden on Desktop) */}
+          {/* Logo for Mobile */}
           <div className="flex justify-center mb-6 lg:hidden">
             <Image 
               src="/favicon.ico" 
@@ -147,7 +147,7 @@ export default function LoginPage() {
               {isSignUp ? "Create your account" : "Welcome back"}
             </h2>
             <p className="text-slate-500 text-sm mt-2">
-              {isSignUp ? "Start organizing your life today." : "Enter your details to access your workspace."}
+              {isSignUp ? "Start organizing your life today." : "Enter your details to organize your self."}
             </p>
           </div>
           
@@ -215,14 +215,13 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-[#0369a1] text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 disabled:opacity-50"
             >
-              {loading ? "Please wait..." : isSignUp ? "Get Started Free" : "Sign In to Workspace"}
+              {loading ? "Please wait..." : isSignUp ? "Sign up" : "Sign In to Workspace"}
             </button>
           </form>
 
-          {/* FIX 2: Updated Contact Link */}
           <div className="mt-6 text-center text-sm">
             <p className="text-slate-500">
-              Need help?{' '}
+              Need help? or Forgot Password {' '}
               <a href="mailto:vibe.todo14@gmail.com" className="font-semibold text-blue-600 hover:underline">
                 Contact Support
               </a>
