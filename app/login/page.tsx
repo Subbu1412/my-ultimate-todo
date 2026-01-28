@@ -3,8 +3,8 @@ import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { Turnstile } from "@marsidev/react-turnstile";
-// 1. IMPORT IMAGE COMPONENT
 import Image from "next/image";
+import { CheckCircle2, Zap, Layout, ShieldCheck } from "lucide-react"; // Import new icons
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,7 +30,6 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        // --- CRITICAL FIX: Check for existing account ---
         const { data: userExists } = await supabase
           .from('profiles') 
           .select('id')
@@ -69,80 +68,153 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f0f9ff] p-4">
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-blue-100">
-        
-        {/* --- 2. NEW LOGO SECTION START --- */}
-        <div className="flex flex-col items-center justify-center mb-6">
-          <Image 
-            src="/favicon.ico" 
-            alt="GoalGrid Logo" 
-            width={120} 
-            height={120} 
-            className="drop-shadow-sm mb-2"
-          />
-          <h1 className="text-2xl font-black text-[#0369a1] text-center italic">Track your goals!</h1>
-        </div>
-        {/* --- NEW LOGO SECTION END --- */}
-        
-        {/* Sign In / Sign Up Toggle Tabs */}
-        <div className="flex bg-blue-50 p-1 rounded-xl mb-8">
-          <button 
-            type="button"
-            onClick={() => setIsSignUp(false)}
-            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${!isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-blue-400'}`}
-          >Sign In</button>
-          <button 
-            type="button"
-            onClick={() => setIsSignUp(true)}
-            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-blue-400'}`}
-          >Sign Up</button>
-        </div>
+    <div className="min-h-screen flex bg-white">
+      
+      {/* --- LEFT SIDE: BRANDING & INFO (Hidden on mobile) --- */}
+      <div className="hidden lg:flex w-1/2 bg-[#0369a1] text-white p-12 flex-col justify-between relative overflow-hidden">
+        {/* Decorative Background Circles */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full translate-x-1/3 translate-y-1/3"></div>
 
-        <form onSubmit={handleAuth} className="space-y-4">
-          {isSignUp && (
-            <input
-              type="text"
-              required
-              placeholder="Display Name"
-              className="w-full p-3 rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-            />
-          )}
-          <input
-            type="email"
-            required
-            placeholder="Email Address"
-            className="w-full p-3 rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            required
-            placeholder="Password"
-            className="w-full p-3 rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <div className="flex justify-center py-2">
-            <Turnstile
-              ref={turnstileRef}
-              siteKey="0x4AAAAAACN1TiTvFpqP1lk0" 
-              onSuccess={(token) => setCaptchaToken(token)}
-            />
+        <div className="z-10">
+          <div className="flex items-center gap-3 mb-12">
+             <Image 
+                src="/favicon.ico" 
+                alt="GoalGrid Logo" 
+                width={40} 
+                height={40} 
+                className="brightness-0 invert" // Makes logo white
+             />
+             <h1 className="text-2xl font-bold tracking-tight">GoalGrid</h1>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
-          >
-            {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign in"}
-          </button>
-        </form>
+          <h2 className="text-4xl font-extrabold mb-6 leading-tight">
+            Stop dreaming. <br/>Start doing.
+          </h2>
+          <p className="text-blue-100 text-lg mb-12 max-w-md">
+            The minimal workspace for creators who want to ship projects faster. No bloat, just focus.
+          </p>
+
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+               <div className="bg-blue-500/30 p-2 rounded-lg"><Zap className="w-6 h-6 text-yellow-300" /></div>
+               <div>
+                 <h3 className="font-bold text-lg">Real-time Sync</h3>
+                 <p className="text-blue-200 text-sm">Updates appear instantly on all devices.</p>
+               </div>
+            </div>
+            <div className="flex items-start gap-4">
+               <div className="bg-blue-500/30 p-2 rounded-lg"><Layout className="w-6 h-6 text-cyan-300" /></div>
+               <div>
+                 <h3 className="font-bold text-lg">Kanban & List Views</h3>
+                 <p className="text-blue-200 text-sm">Visualize your work the way you want.</p>
+               </div>
+            </div>
+            <div className="flex items-start gap-4">
+               <div className="bg-blue-500/30 p-2 rounded-lg"><ShieldCheck className="w-6 h-6 text-green-300" /></div>
+               <div>
+                 <h3 className="font-bold text-lg">Enterprise Security</h3>
+                 <p className="text-blue-200 text-sm">Your data is encrypted and safe.</p>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="z-10 text-sm text-blue-300">
+          © 2026 GoalGrid Inc.
+        </div>
+      </div>
+
+      {/* --- RIGHT SIDE: LOGIN FORM --- */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-blue-50/30">
+        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-blue-100">
+          
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-900">
+              {isSignUp ? "Create your account" : "Welcome back"}
+            </h2>
+            <p className="text-slate-500 text-sm mt-2">
+              {isSignUp ? "Start organizing your life today." : "Enter your details to access your workspace."}
+            </p>
+          </div>
+          
+          {/* Sign In / Sign Up Tabs */}
+          <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
+            <button 
+              type="button"
+              onClick={() => setIsSignUp(false)}
+              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${!isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}
+            >Sign In</button>
+            <button 
+              type="button"
+              onClick={() => setIsSignUp(true)}
+              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${isSignUp ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}
+            >Sign Up</button>
+          </div>
+
+          <form onSubmit={handleAuth} className="space-y-4">
+            {isSignUp && (
+              <div className="space-y-1">
+                 <label className="text-xs font-semibold text-slate-500 ml-1">Display Name</label>
+                 <input
+                  type="text"
+                  required
+                  placeholder="e.g. Alex Maker"
+                  className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-500 ml-1">Email</label>
+              <input
+                type="email"
+                required
+                placeholder="name@example.com"
+                className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+               <label className="text-xs font-semibold text-slate-500 ml-1">Password</label>
+               <input
+                type="password"
+                required
+                placeholder="••••••••"
+                className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="flex justify-center py-2">
+              <Turnstile
+                ref={turnstileRef}
+                siteKey="0x4AAAAAACN1TiTvFpqP1lk0" 
+                onSuccess={(token) => setCaptchaToken(token)}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#0369a1] text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 disabled:opacity-50"
+            >
+              {loading ? "Please wait..." : isSignUp ? "Get Started Free" : "Sign In to Workspace"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            <p className="text-slate-500">
+              Need help?{' '}
+              <a href="/contact" className="font-semibold text-blue-600 hover:underline">
+                Contact Support
+              </a>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
